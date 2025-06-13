@@ -6,7 +6,10 @@
 
 ## Features
 
-* Colors enemy plates depending on if they're attacking you
+* Colors enemy plate health depending on if they're attacking you
+* Keeps class colored plate health for enemy players
+* Highlights with pink color plate name text if they targeting/casting you
+* Highlights with blue color Grounding Totem and Draenei Netherwalker
 * Text highlight for the enemy you're targeting
 
 ## Bugs / Missing Features
