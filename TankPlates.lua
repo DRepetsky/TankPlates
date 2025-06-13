@@ -46,7 +46,6 @@ local cc_spells = {
 local customNameColors = {
 	["Draenei Netherwalker"]	= {0, 0.5, 1, 1 }, -- Blue Credit to Ahrkon
 	["Grounding Totem"]				= {0, 0.5, 1, 1 },
-	["Mangy Wolf"]						= {0, 0.5, 1, 1 },
 }
 
 -- shackle, sheep, hibernate, magic dust, etc
@@ -148,14 +147,6 @@ local function InitPlate(plate)
     end
     local unit = tracked_guids[guid]
 
-    if UnitIsUnit("target",guid) then
-      -- plate.namefontstring:SetTextColor(1,0,1,1)
-      plate.namefontstring:SetTextColor(1,1,0,1)
-      -- plate.namefontstring:SetTextColor(0.825,0.144,0.825,1)
-    else
-      plate.namefontstring:SetTextColor(unpack(unit.unit_name_color))
-    end
-
     if DEBUG then
       if unit.current_target then
         plate.namefontstring:SetText(UnitName(unit.current_target))
@@ -168,7 +159,9 @@ local function InitPlate(plate)
     -- First, determine if this is a unit we should care to color.
     -- Is the player in combat, and is the unit in combat?
     -- if UnitAffectingCombat("player") and UnitAffectingCombat(guid) then
-    if UnitAffectingCombat("player") and UnitAffectingCombat(guid) and not unit.player and
+    if UnitAffectingCombat("player") and 
+      UnitAffectingCombat(guid) and 
+      not unit.player and
       not UnitCanAssist("player",guid) then -- don't color friendlies
 
       -- The cases we want 'green' for are:
@@ -197,7 +190,9 @@ local function InitPlate(plate)
     else
       this:SetStatusBarColor(unpack(unit.healthbar_color))
     end
-
+		
+		plate.namefontstring:SetTextColor(unpack(unit.unit_name_color))
+		
 		if not UnitCanAssist("player",guid) then
 			if unit.cc then
 				plate.namefontstring:SetTextColor(1,1,0,1) -- yellow
@@ -210,6 +205,10 @@ local function InitPlate(plate)
 		if customNameColors[unit.name] then
 			plate.namefontstring:SetTextColor(unpack(customNameColors[unit.name]))
 			this:SetStatusBarColor(unpack(customNameColors[unit.name]))
+		end
+
+		if UnitIsUnit("target",guid) then
+			plate.namefontstring:SetTextColor(1,1,0,1)
 		end
   end
 
