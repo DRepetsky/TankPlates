@@ -26,6 +26,27 @@ local cc_spells = {
   "Gouge",
   "Sap",
   "Magic Dust",
+	"Blind",
+	"Hex",
+	"Entangling Roots",
+	"Repentance",
+	"Turn Evil",
+	"Fear",
+	"Death Coil",
+	"Seduction",
+	"Psychic Scream",
+	"Mind Control",
+	"Scatter Shot",
+	"Kidney Shot",
+	"Cheap Shot",
+	"Bash",
+	"Hammer of Justice",
+}
+
+local customNameColors = {
+	["Draenei Netherwalker"]	= {0, 0.5, 1, 1 }, -- Blue Credit to Ahrkon
+	["Grounding Totem"]				= {0, 0.5, 1, 1 },
+	["Mangy Wolf"]						= {0, 0.5, 1, 1 },
 }
 
 -- shackle, sheep, hibernate, magic dust, etc
@@ -143,10 +164,11 @@ local function InitPlate(plate)
       end
     end
 
+
     -- First, determine if this is a unit we should care to color.
     -- Is the player in combat, and is the unit in combat?
     -- if UnitAffectingCombat("player") and UnitAffectingCombat(guid) then
-    if UnitAffectingCombat("player") and UnitAffectingCombat(guid) and
+    if UnitAffectingCombat("player") and UnitAffectingCombat(guid) and not unit.player and
       not UnitCanAssist("player",guid) then -- don't color friendlies
 
       -- The cases we want 'green' for are:
@@ -158,7 +180,7 @@ local function InitPlate(plate)
         -- PFUI and ShaguPlates use enemy bar colors to determine types, this can really mess with things.
         -- For instance if we choose (0,0,1,1) blue, the shagu reads this as friendly player and may color based on class.
         -- Due to this yellow (neutral) has been chosen for now.
-        this:SetStatusBarColor(1, 1, 0, 0.6)
+				this:SetStatusBarColor(1, 1, 0, 1) -- yellow
       elseif (unit.casting and (unit.casting_at == player_guid or unit.previous_target == player_guid)) then
         -- casting on someone but was attacking you
         this:SetStatusBarColor(0, 1, 0, 1) -- green
@@ -175,6 +197,20 @@ local function InitPlate(plate)
     else
       this:SetStatusBarColor(unpack(unit.healthbar_color))
     end
+
+		if not UnitCanAssist("player",guid) then
+			if unit.cc then
+				plate.namefontstring:SetTextColor(1,1,0,1) -- yellow
+			elseif unit.current_target == guid or
+				(unit.casting and unit.casting_at == player_guid) then
+					plate.namefontstring:SetTextColor(0.825,0.144,0.825,1) -- magenta
+			end
+		end
+
+		if customNameColors[unit.name] then
+			plate.namefontstring:SetTextColor(unpack(customNameColors[unit.name]))
+			this:SetStatusBarColor(unpack(customNameColors[unit.name]))
+		end
   end
 
   HookScript(plate:GetChildren(), "OnUpdate", UpdateHealth)
@@ -201,8 +237,10 @@ local function Update()
           debug_print("adding "..guid.." "..UnitName(guid))
           -- store the original plate text color and health bar color, to revert to when needed
           tracked_guids[guid] = {
-            unit_name_color = { plate.namefontstring:GetTextColor() },
+						unit_name_color = { plate.namefontstring:GetTextColor() },
             healthbar_color = { plate:GetChildren():GetStatusBarColor() },
+						name = plate.namefontstring:GetText(),
+						player = UnitIsPlayer(guid),
             current_target = nil,
             previous_target = nil,
             tick = 0,
