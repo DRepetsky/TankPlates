@@ -208,7 +208,7 @@ local function InitPlate(plate)
 		end
 
 		if UnitIsUnit("target",guid) then
-			plate.namefontstring:SetTextColor(1,1,0,1)
+			plate.namefontstring:SetTextColor(1,0.3,0,1)
 		end
   end
 
