@@ -196,7 +196,7 @@ local function InitPlate(plate)
 		if not UnitCanAssist("player",guid) then
 			if unit.cc then
 				plate.namefontstring:SetTextColor(1,1,0,1) -- yellow
-			elseif unit.current_target == guid or
+			elseif unit.current_target == player_guid or
 				(unit.casting and unit.casting_at == player_guid) then
 					plate.namefontstring:SetTextColor(0.825,0.144,0.825,1) -- magenta
 			end
